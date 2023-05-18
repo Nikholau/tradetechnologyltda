@@ -1,13 +1,14 @@
-import React, { useState, FormEvent } from 'react';
+import React, { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Input from '../../components/Input';
 import { FormLogin, InputWrapper, RoundedButton, Title } from './style';
+import { useUserContext } from '../../hooks/UserContext';
 
 const LoginScreen: React.FC = () => {
   const navigate = useNavigate();
-  const [key, setKey] = useState('');
+  const { key, setKey } = useUserContext();
 
   const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -33,7 +34,7 @@ const LoginScreen: React.FC = () => {
         });
         setKey('');
       } else {
-        navigate('/outra-pagina');
+        navigate('/countries');
       }
     } catch (error) {
       toast.error('Erro na requisição', { autoClose: 3000 });
