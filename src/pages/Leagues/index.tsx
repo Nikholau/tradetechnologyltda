@@ -1,53 +1,37 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Button from '../../components/Button';
 import { FormLogin, InputWrapper, Title } from '../Login/style';
 import { useUserContext } from '../../hooks/UserContext';
-import Select, { OptionProps } from 'react-select';
+import Select from 'react-select';
 
-export interface IOptionCountry {
-  label: string;
-  value: string;
-  flag: string;
-}
-
-interface ICountry {
+export interface ILeague {
+  id: string;
+  value?: string;
   name: string;
-  code: string;
-  flag: string;
+  type: string;
+  logo: string;
 }
 
-const CustomOption: React.FC<OptionProps<IOptionCountry, false>> = ({
-  innerProps,
-  label,
-  data,
-}) => (
-  <div {...innerProps}>
-    <img
-      src={data.flag}
-      alt={label}
-      style={{ width: '20px', marginRight: '10px' }}
-    />
-    {label}
-  </div>
-);
-
-const Countries: React.FC = () => {
+const Leagues: React.FC = () => {
   const navigate = useNavigate();
-  const [options, setOptions] = useState<IOptionCountry[]>([]);
+  const [options, setOptions] = useState<ILeague[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const { key, country, setCountry } = useUserContext();
+  const { key, country, league, setLeague } = useUserContext();
 
   const handleSelectCountry = useCallback(async () => {
-    navigate('/seasons');
+    navigate('/teams');
   }, [navigate]);
 
-  const handleChangeCountry = (value: any) => {
-    setCountry(value);
-  };
+  const handleChangeCountry = useCallback(
+    (value: any) => {
+      setLeague(value);
+    },
+    [setLeague],
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,18 +48,16 @@ const Countries: React.FC = () => {
 
       try {
         const response = await fetch(
-          `https://v3.football.api-sports.io/countries`,
+          `https://v3.football.api-sports.io/leagues?country=${country.label}`,
           requestOptions,
         );
         const data = await response.json();
 
-        const transformedOptions: IOptionCountry[] = data.response.map(
-          (item: ICountry) => ({
-            label: item.name,
-            value: item.code,
-            flag: item.flag,
-          }),
-        );
+        const transformedOptions = data.response.map((item: any) => ({
+          value: item.league.id,
+          label: item.league.name,
+          logo: item.league.logo,
+        }));
 
         setOptions(transformedOptions);
       } catch (error) {
@@ -89,23 +71,18 @@ const Countries: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isButtonDisabled = !country;
+  const isButtonDisabled = !league;
 
   return (
     <FormLogin onSubmit={handleSelectCountry}>
-      <Title>Selecione o nome do país</Title>
+      <Title>Escolha a Liga do País</Title>
       <InputWrapper>
         <Select
           options={options}
           onChange={handleChangeCountry}
-          placeholder="Selecione o nome do país"
+          placeholder="Escolha a liga do país selecionado"
           isLoading={isLoading}
           isDisabled={isLoading}
-          getOptionLabel={(option: IOptionCountry) => option.label}
-          getOptionValue={(option: IOptionCountry) => option.value}
-          components={{
-            Option: CustomOption,
-          }}
         />
       </InputWrapper>
       <Button type="submit" disabled={isButtonDisabled}>
@@ -116,4 +93,4 @@ const Countries: React.FC = () => {
   );
 };
 
-export default Countries;
+export default Leagues;

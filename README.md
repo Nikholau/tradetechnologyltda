@@ -1,12 +1,8 @@
 # Todos os passos de desenvolvimento do projeto
 
 ## Criar a estrutura básica do projeto ReactJS com TypeScript.
-   npx create-react-app my-app --template typescript
-  
-    instalar prettier e eslint além de principais depêndecias
 
 ## Implementar a tela de login, onde o usuário pode inserir a API key de autenticação.
-    
 
 ## Validar a API key inserida pelo usuário e realizar o login.
 

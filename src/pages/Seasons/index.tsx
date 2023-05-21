@@ -14,6 +14,11 @@ import {
   SubTitle,
 } from './style';
 
+export interface ISeason {
+  label: string;
+  value: string;
+}
+
 interface IOptionSeason {
   label: string;
   value: string;
@@ -27,7 +32,7 @@ const Seasons: React.FC = () => {
   >([]);
 
   const handleSelectSeason = async () => {
-    navigate('/seasons');
+    navigate('/leagues');
   };
 
   const handleChangeSeason = (
